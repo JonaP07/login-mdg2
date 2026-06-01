@@ -7,12 +7,12 @@ services:
     ports:
       - "8080:80"
     environment:
-      # Puedes usar DATABASE_URL para simular el entorno de Render
-      DATABASE_URL: postgresql://postgres:password@localhost:5432/login_db
-      # O seguir usando variables individuales
-      DB_HOST: db.ohjjpiblfzfbeonyrlis.supabase.co
+      # Configuración usando la cadena de conexión completa (Simulando Render)
+      DATABASE_URL: postgresql://postgres.ohjjpiblfzfbeonyrlis:mdg3login77@aws-1-sa-east-1.pooler.supabase.com:5432/postgres
+      # Variables individuales para mayor compatibilidad local
+      DB_HOST: aws-1-sa-east-1.pooler.supabase.com
       DB_PORT: 5432
       DB_NAME: postgres
-      DB_USER: postgres
-      DB_PASSWORD: mdg3login77 # Reemplazar con la contraseña real
+      DB_USER: postgres.ohjjpiblfzfbeonyrlis
+      DB_PASSWORD: mdg3login77
     restart: always

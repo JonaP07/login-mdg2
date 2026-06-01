@@ -33,7 +33,7 @@ try {
     $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 } catch (PDOException $e) {
-    // Para depuración en Render: mostramos el error real (luego lo quitaremos por seguridad)
+    // Error controlado para el usuario (Seguro para producción)
     error_log('Error de conexión: ' . $e->getMessage());
-    die('Error de conexión con la base de datos: ' . $e->getMessage());
+    die('Lo sentimos, hay un problema de conexión con la base de datos.');
 }
