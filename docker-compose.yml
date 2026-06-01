@@ -1,8 +1,18 @@
 version: '3.8'
+
 services:
   web:
     build: .
+    container_name: login_php_app
     ports:
       - "8080:80"
     environment:
-      postgresql://postgres:[YOUR-PASSWORD]@db.ohjjpiblfzfbeonyrlis.supabase.co:5432/postgres
+      # Puedes usar DATABASE_URL para simular el entorno de Render
+      DATABASE_URL: postgresql://postgres:password@localhost:5432/login_db
+      # O seguir usando variables individuales
+      DB_HOST: db.ohjjpiblfzfbeonyrlis.supabase.co
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: mdg3login77 # Reemplazar con la contraseña real
+    restart: always

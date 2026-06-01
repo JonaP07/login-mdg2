@@ -1,7 +1,11 @@
 <?php
-session_start();
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-// Proteger esta página — si no está logueado, regresar al login
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 if (!isset($_SESSION['usuario_id'])) {
     header('Location: login.php');
     exit;
@@ -22,7 +26,7 @@ $nombre = htmlspecialchars($_SESSION['usuario_nombre']);
         <div class="dashboard-box">
             <h1>✅ Bienvenido, <?= $nombre ?>!</h1>
             <p>Has iniciado sesión correctamente.</p>
-            
+
             <div class="info-box">
                 <h2>🐳 Información del despliegue</h2>
                 <ul>
@@ -32,7 +36,7 @@ $nombre = htmlspecialchars($_SESSION['usuario_nombre']);
                     <li><strong>Despliegue:</strong> Zero-Downtime Deploy</li>
                 </ul>
             </div>
-            
+
             <a href="logout.php" class="btn-logout">Cerrar Sesión</a>
         </div>
     </div>
