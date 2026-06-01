@@ -10,15 +10,16 @@ $tipo_mensaje = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registrar_cliente'])) {
     $nombre_cli   = trim($_POST['nombre_cli'] ?? '');
     $email_cli    = trim($_POST['email_cli'] ?? '');
+    $telefono_cli = trim($_POST['telefono_cli'] ?? '');
 
     if (empty($nombre_cli) || empty($email_cli)) {
         $mensaje = "Nombre y Email son obligatorios.";
         $tipo_mensaje = "error";
     } else {
         try {
-            $stmt = $db->prepare("INSERT INTO clientes (nombre, email) VALUES (?, ?)");
-            $stmt->execute([$nombre_cli, $email_cli]);
-            $mensaje = "¡Registro exitoso!";
+            $stmt = $db->prepare("INSERT INTO clientes (nombre, email, telefono) VALUES (?, ?, ?)");
+            $stmt->execute([$nombre_cli, $email_cli, $telefono_cli]);
+            $mensaje = "¡Registro exitoso! Gracias por unirte.";
             $tipo_mensaje = "success";
         } catch (PDOException $e) {
             $mensaje = "El email ya existe.";
@@ -26,21 +27,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registrar_cliente']))
         }
     }
 }
+
+// Obtener lista de clientes registrados
+$clientes = [];
+try {
+    $stmt = $db->query("SELECT * FROM clientes ORDER BY creado_en DESC LIMIT 5");
+    $clientes = $stmt->fetchAll();
+} catch (PDOException $e) {
+    // Silencioso
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Men's Wear - Simple & Classic</title>
+    <title>Men's Wear - Colección 2026</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .client-list-box { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; text-align: left; }
+        .client-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 10px; }
+        .client-table th, .client-table td { padding: 8px; border-bottom: 1px solid #f0f0f0; text-align: left; }
+        .client-table th { color: #888; font-weight: normal; }
+    </style>
 </head>
 <body>
 
 <header>
     <div class="container">
         <h1>MEN'S WEAR</h1>
-        <p>Estilo clásico para el hombre moderno</p>
+        <p>Nueva Colección 2026</p>
     </div>
 </header>
 
@@ -64,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registrar_cliente']))
     </div>
 
     <div class="registration-area">
-        <h2 style="margin-bottom: 20px; text-align: center;">Suscríbete para ofertas</h2>
+        <h2 style="margin-bottom: 20px; text-align: center;">Únete al Club VIP 2026</h2>
         
         <?php if ($mensaje): ?>
             <div class="alert alert-<?= $tipo_mensaje ?>"><?= htmlspecialchars($mensaje) ?></div>
@@ -72,50 +88,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registrar_cliente']))
 
         <form method="POST">
             <div class="form-group">
-                <input type="text" name="nombre_cli" required placeholder="Nombre">
+                <input type="text" name="nombre_cli" required placeholder="Nombre completo">
             </div>
             <div class="form-group">
                 <input type="email" name="email_cli" required placeholder="Correo Electrónico">
             </div>
+            <div class="form-group">
+                <input type="text" name="telefono_cli" placeholder="Teléfono / WhatsApp">
+            </div>
             <button type="submit" name="registrar_cliente" class="btn">REGISTRARME</button>
         </form>
 
-        <?php
-        // Obtener y mostrar clientes registrados
-        try {
-            $stmt = $db->query("SELECT nombre, email, creado_en FROM clientes ORDER BY creado_en DESC LIMIT 10");
-            $registrados = $stmt->fetchAll();
-            
-            if (!empty($registrados)): ?>
-                <div style="margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
-                    <h3 style="font-size: 1rem; margin-bottom: 15px;">Últimos Clientes Registrados:</h3>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-                        <thead>
-                            <tr style="background: #eee; text-align: left;">
-                                <th style="padding: 8px;">Nombre</th>
-                                <th style="padding: 8px;">Email</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($registrados as $r): ?>
-                                <tr>
-                                    <td style="padding: 8px; border-bottom: 1px solid #eee;"><?= htmlspecialchars($r['nombre']) ?></td>
-                                    <td style="padding: 8px; border-bottom: 1px solid #eee;"><?= htmlspecialchars($r['email']) ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            <?php endif;
-        } catch (Exception $e) {
-            // Error silencioso si la tabla no existe aún
-        }
-        ?>
+        <?php if (!empty($clientes)): ?>
+        <div class="client-list-box">
+            <h3 style="font-size: 1rem; margin-bottom: 10px;">Clientes Registrados:</h3>
+            <table class="client-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($clientes as $c): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($c['nombre']) ?></td>
+                        <td><?= htmlspecialchars($c['email']) ?></td>
+                        <td><?= htmlspecialchars($c['telefono'] ?? '-') ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php endif; ?>
     </div>
 </div>
 
 <footer>
-    <p>&copy; 2026 Men's Wear. Diseño Simple.</p>
+    <p>&copy; 2026 Men's Wear. Todos los derechos reservados.</p>
 </footer>
 
 </body>
