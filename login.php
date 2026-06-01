@@ -16,14 +16,7 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $email    = trim($_POST['email'] ?? '');
-    // Buscamos cualquier campo que empiece por 'key_' para obtener la contraseña
-    $password = '';
-    foreach ($_POST as $key => $value) {
-        if (strpos($key, 'key_') === 0) {
-            $password = trim($value);
-            break;
-        }
-    }
+    $password = trim($_POST['password_real'] ?? '');
 
     if (empty($email) || empty($password)) {
         $error = 'Por favor completa todos los campos.';
@@ -101,14 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="form-group">
-                    <label for="p_field">Contraseña</label>
+                    <label for="password_real">Contraseña</label>
                     <input
-                        type="text"
-                        id="p_field"
-                        name="key_<?= time() ?>" 
+                        type="password"
+                        id="password_real"
+                        name="password_real" 
                         placeholder="••••••••"
-                        style="-webkit-text-security: disc; -moz-appearance: none;" 
-                        autocomplete="off"
+                        autocomplete="new-password"
                         required
                     >
                     <p style="font-size: 0.8em; color: #666; margin-top: 5px;">Escribe <strong>1234</strong> manualmente.</p>
