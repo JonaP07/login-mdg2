@@ -30,30 +30,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([':email' => $email]);
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // DEBUG: Si no encuentras al usuario, dínoslo
-            if (!$usuario) {
-                $error = 'Usuario no encontrado en la base de datos: ' . htmlspecialchars($email);
-            } else {
-                // Verificamos la contraseña
-                $hash_valido = password_verify($password, $usuario['password_hash']);
+            if ($usuario && password_verify($password, $usuario['password_hash'])) {
+                // Regenerar el ID de sesión para prevenir Session Fixation
+                session_regenerate_id(true);
                 
-                if ($hash_valido) {
-                    // Regenerar el ID de sesión para prevenir Session Fixation
-                    session_regenerate_id(true);
-                    
-                    $_SESSION['usuario_id']     = $usuario['id'];
-                    $_SESSION['usuario_nombre'] = $usuario['nombre'];
+                $_SESSION['usuario_id']     = $usuario['id'];
+                $_SESSION['usuario_nombre'] = $usuario['nombre'];
 
-                    header('Location: dashboard.php');
-                    exit;
-                } else {
-                    // DEBUG: Solo para el administrador, vamos a ver qué está pasando
-                    if ($email === 'admin@test.com') {
-                        $error = "Contraseña incorrecta. Longitud ingresada: " . strlen($password) . ". Longitud hash DB: " . strlen($usuario['password_hash']);
-                    } else {
-                        $error = 'Email o contraseña incorrectos.';
-                    }
-                }
+                header('Location: dashboard.php');
+                exit;
+            } else {
+                $error = 'Email o contraseña incorrectos.';
             }
 
         } catch (PDOException $e) {
