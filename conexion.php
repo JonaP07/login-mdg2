@@ -3,8 +3,10 @@
 $database_url = getenv('DATABASE_URL');
 
 if ($database_url) {
+    // Supabase a veces usa postgres://, lo normalizamos a postgresql:// para parse_url
+    $database_url = str_replace('postgres://', 'postgresql://', $database_url);
+    
     // Si existe DATABASE_URL (Formato de Render/Supabase)
-    // Ejemplo: postgresql://user:pass@host:port/dbname
     $db_config = parse_url($database_url);
     
     $host     = $db_config['host'];
