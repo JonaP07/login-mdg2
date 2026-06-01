@@ -87,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         id="password"
                         name="password"
                         placeholder="••••••••"
+                        autocomplete="new-password"
                         required
                     >
                 </div>
