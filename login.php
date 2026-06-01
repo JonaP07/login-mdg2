@@ -33,17 +33,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // DEBUG: Si no encuentras al usuario, dínoslo
             if (!$usuario) {
                 $error = 'Usuario no encontrado en la base de datos: ' . htmlspecialchars($email);
-            } elseif (password_verify($password, $usuario['password_hash'])) {
-                // Regenerar el ID de sesión para prevenir Session Fixation
-                session_regenerate_id(true);
-                
-                $_SESSION['usuario_id']     = $usuario['id'];
-                $_SESSION['usuario_nombre'] = $usuario['nombre'];
-
-                header('Location: dashboard.php');
-                exit;
             } else {
-                $error = 'Email o contraseña incorrectos.';
+                // Verificamos la contraseña
+                $hash_valido = password_verify($password, $usuario['password_hash']);
+                
+                if ($hash_valido) {
+                    // Regenerar el ID de sesión para prevenir Session Fixation
+                    session_regenerate_id(true);
+                    
+                    $_SESSION['usuario_id']     = $usuario['id'];
+                    $_SESSION['usuario_nombre'] = $usuario['nombre'];
+
+                    header('Location: dashboard.php');
+                    exit;
+                } else {
+                    // DEBUG: Si la contraseña falla, mostramos información técnica temporal
+                    $longitud_hash = strlen($usuario['password_hash']);
+                    $error = "Contraseña incorrecta. (Longitud del hash en DB: $longitud_hash)";
+                }
             }
 
         } catch (PDOException $e) {
