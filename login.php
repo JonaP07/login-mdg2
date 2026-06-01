@@ -47,9 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     header('Location: dashboard.php');
                     exit;
                 } else {
-                    // DEBUG: Si la contraseña falla, mostramos información técnica temporal
-                    $longitud_hash = strlen($usuario['password_hash']);
-                    $error = "Contraseña incorrecta. (Longitud del hash en DB: $longitud_hash)";
+                    // DEBUG: Solo para el administrador, vamos a ver qué está pasando
+                    if ($email === 'admin@test.com') {
+                        $error = "Contraseña incorrecta. Longitud ingresada: " . strlen($password) . ". Longitud hash DB: " . strlen($usuario['password_hash']);
+                    } else {
+                        $error = 'Email o contraseña incorrectos.';
+                    }
                 }
             }
 

@@ -24,6 +24,7 @@ try {
     echo "<p>Email: <strong>$email</strong></p>";
     echo "<p>Password: <strong>$password</strong></p>";
     echo "<p>Hash generado: <code>$hash</code></p>";
+    echo "<p>Longitud del hash: " . strlen($hash) . "</p>";
     echo "<br><a href='login.php'>Ir al Login</a>";
 
 } catch (PDOException $e) {
