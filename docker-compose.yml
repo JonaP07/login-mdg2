@@ -6,13 +6,6 @@ services:
     container_name: login_php_app
     ports:
       - "8080:80"
-    environment:
-      # Configuración usando la cadena de conexión completa (Simulando Render)
-      DATABASE_URL: postgresql://postgres.ohjjpiblfzfbeonyrlis:mdg3login77@aws-1-sa-east-1.pooler.supabase.com:5432/postgres
-      # Variables individuales para mayor compatibilidad local
-      DB_HOST: aws-1-sa-east-1.pooler.supabase.com
-      DB_PORT: 5432
-      DB_NAME: postgres
-      DB_USER: postgres.ohjjpiblfzfbeonyrlis
-      DB_PASSWORD: mdg3login77
+    env_file:
+      - .env
     restart: always
