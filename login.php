@@ -16,8 +16,8 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $email    = trim($_POST['email'] ?? '');
-    // Cambiamos el nombre del campo para engañar al autocompletado del navegador
-    $password = trim($_POST['password_real'] ?? '');
+    // Usamos el nuevo nombre de campo aleatorio
+    $password = trim($_POST['acceso_key'] ?? '');
 
     if (empty($email) || empty($password)) {
         $error = 'Por favor completa todos los campos.';
@@ -44,11 +44,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     // DIAGNÓSTICO DETALLADO
                     $longitud_ingresada = strlen($password_ingresada);
-                    $longitud_db = strlen($usuario['password_hash']);
                     $error = "Contraseña incorrecta.<br>";
-                    $error .= "Enviado: $longitud_ingresada caracteres.<br>";
-                    $error .= "En DB: $longitud_db caracteres.<br>";
-                    $error .= "Sugerencia: Escribe '1234' manualmente, sin copiar/pegar.";
+                    $error .= "Recibido: $longitud_ingresada caracteres.<br>";
+                    
+                    if ($longitud_ingresada == 11) {
+                        $error .= "<strong style='color:yellow'>⚠️ ¡Atención! Estás enviando 11 caracteres. Parece que tu navegador está poniendo tu clave de Supabase (mdg3login77) en lugar de 1234.</strong><br>";
+                    }
+                    
+                    $error .= "Sugerencia: Limpia el cuadro de texto y escribe 1234.";
                 }
             } else {
                 $error = 'El correo electrónico no existe en nuestro sistema.';
@@ -92,15 +95,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="form-group">
-                    <label for="password_fake">Contraseña</label>
+                    <label for="password_final">Contraseña</label>
                     <input
-                        type="password"
-                        id="password_fake"
-                        name="password_real"
+                        type="text"
+                        id="password_final"
+                        name="acceso_key"
                         placeholder="••••••••"
+                        style="-webkit-text-security: disc;" 
                         autocomplete="off"
                         required
                     >
+                    <p style="font-size: 0.8em; color: #666; margin-top: 5px;">Escribe <strong>1234</strong> manualmente.</p>
                 </div>
 
                 <button type="submit" class="btn-login">Entrar</button>
