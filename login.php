@@ -30,17 +30,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([':email' => $email]);
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($usuario && password_verify($password, $usuario['password_hash'])) {
-                // Regenerar el ID de sesión para prevenir Session Fixation
-                session_regenerate_id(true);
+            if ($usuario) {
+                // Limpiamos la contraseña ingresada por si hay espacios invisibles
+                $password_ingresada = trim($password);
                 
-                $_SESSION['usuario_id']     = $usuario['id'];
-                $_SESSION['usuario_nombre'] = $usuario['nombre'];
-
-                header('Location: dashboard.php');
-                exit;
+                if (password_verify($password_ingresada, $usuario['password_hash'])) {
+                    session_regenerate_id(true);
+                    $_SESSION['usuario_id']     = $usuario['id'];
+                    $_SESSION['usuario_nombre'] = $usuario['nombre'];
+                    header('Location: dashboard.php');
+                    exit;
+                } else {
+                    // DIAGNÓSTICO DETALLADO
+                    $longitud_ingresada = strlen($password_ingresada);
+                    $longitud_db = strlen($usuario['password_hash']);
+                    $error = "Contraseña incorrecta.<br>";
+                    $error .= "Enviado: $longitud_ingresada caracteres.<br>";
+                    $error .= "En DB: $longitud_db caracteres.<br>";
+                    $error .= "Sugerencia: Escribe '1234' manualmente, sin copiar/pegar.";
+                }
             } else {
-                $error = 'Email o contraseña incorrectos.';
+                $error = 'El correo electrónico no existe en nuestro sistema.';
             }
 
         } catch (PDOException $e) {
