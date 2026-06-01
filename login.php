@@ -30,7 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([':email' => $email]);
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($usuario && password_verify($password, $usuario['password_hash'])) {
+            // DEBUG: Si no encuentras al usuario, dínoslo
+            if (!$usuario) {
+                $error = 'Usuario no encontrado en la base de datos: ' . htmlspecialchars($email);
+            } elseif (password_verify($password, $usuario['password_hash'])) {
                 // Regenerar el ID de sesión para prevenir Session Fixation
                 session_regenerate_id(true);
                 
