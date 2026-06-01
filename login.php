@@ -16,7 +16,8 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $email    = trim($_POST['email'] ?? '');
-    $password = trim($_POST['password'] ?? '');
+    // Cambiamos el nombre del campo para engañar al autocompletado del navegador
+    $password = trim($_POST['password_real'] ?? '');
 
     if (empty($email) || empty($password)) {
         $error = 'Por favor completa todos los campos.';
@@ -91,13 +92,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Contraseña</label>
+                    <label for="password_fake">Contraseña</label>
                     <input
                         type="password"
-                        id="password"
-                        name="password"
+                        id="password_fake"
+                        name="password_real"
                         placeholder="••••••••"
-                        autocomplete="new-password"
+                        autocomplete="off"
                         required
                     >
                 </div>
