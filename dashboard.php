@@ -79,11 +79,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registrar_cliente']))
             </div>
             <button type="submit" name="registrar_cliente" class="btn">REGISTRARME</button>
         </form>
+
+        <?php
+        // Obtener y mostrar clientes registrados
+        try {
+            $stmt = $db->query("SELECT nombre, email, creado_en FROM clientes ORDER BY creado_en DESC LIMIT 10");
+            $registrados = $stmt->fetchAll();
+            
+            if (!empty($registrados)): ?>
+                <div style="margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 15px;">Últimos Clientes Registrados:</h3>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <thead>
+                            <tr style="background: #eee; text-align: left;">
+                                <th style="padding: 8px;">Nombre</th>
+                                <th style="padding: 8px;">Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($registrados as $r): ?>
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #eee;"><?= htmlspecialchars($r['nombre']) ?></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #eee;"><?= htmlspecialchars($r['email']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif;
+        } catch (Exception $e) {
+            // Error silencioso si la tabla no existe aún
+        }
+        ?>
     </div>
 </div>
 
 <footer>
-    <p>&copy; 2024 Men's Wear. Diseño Simple.</p>
+    <p>&copy; 2026 Men's Wear. Diseño Simple.</p>
 </footer>
 
 </body>
