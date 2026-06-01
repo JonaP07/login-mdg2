@@ -11,10 +11,10 @@ CREATE TABLE usuarios (
 );
 
 -- Insertar usuario de prueba (contraseña: 1234)
--- Hash verificado para '1234'
+-- Hash real verificado para '1234'
 INSERT INTO usuarios (nombre, email, password_hash)
 VALUES (
     'Administrador',
     'admin@test.com',
-    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'
+    '$2y$10$PgzmI5Izn.MuscEXkSS.meFMAy0D5jhd3vzus3ZQrxRxWzi1pgG4S'
 );
