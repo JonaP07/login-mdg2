@@ -6,9 +6,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Forzamos una sesión de invitado para mostrar el dashboard sin login
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
-    exit;
+    $_SESSION['usuario_id'] = 999;
+    $_SESSION['usuario_nombre'] = 'Invitado (Modo Vista)';
 }
 
 $nombre = htmlspecialchars($_SESSION['usuario_nombre']);
