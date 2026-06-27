@@ -8,6 +8,11 @@ RUN apt-get update && apt-get install -y libpq-dev \
 # Copiamos todo nuestro código dentro del contenedor
 COPY . /var/www/html/
 
+# Configuramos Apache para que la raíz del documento sea la carpeta public
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
 # Le damos los permisos correctos
 RUN chown -R www-data:www-data /var/www/html
 

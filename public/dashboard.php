@@ -2,7 +2,22 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-require_once 'conexion.php';
+// Establecer la ruta de las sesiones y crearla si no existe
+$session_path = __DIR__ . '/../sessions';
+if (!is_dir($session_path)) {
+    mkdir($session_path, 0777, true);
+}
+session_save_path($session_path);
+// Check if user is authenticated
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+require_once __DIR__ . '/../src/config/conexion.php';
 
 $mensaje = '';
 $tipo_mensaje = '';
@@ -43,7 +58,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Men's Wear - Colección 2026</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
         .client-list-box { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; text-align: left; }
         .client-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 10px; }
@@ -56,7 +71,12 @@ try {
 <header>
     <div class="container">
         <h1>MEN'S WEAR</h1>
-        <p>Nueva Colección 2026</p>
+        <p>Nueva Colección 2026 - Bienvenido <?= htmlspecialchars($_SESSION['usuario_nombre']) ?>!</p>
+        <p style="margin-top: 10px;">
+            <a href="buscar.php" style="color: #fff; text-decoration: underline; margin-right: 20px;">→ Búsqueda de Productos (TC-03)</a>
+            <a href="pedido.php" style="color: #fff; text-decoration: underline; margin-right: 20px;">→ Gestión de Pedidos (TC-02)</a>
+            <a href="logout.php" style="color: #fff; text-decoration: underline;">Cerrar Sesión</a>
+        </p>
     </div>
 </header>
 

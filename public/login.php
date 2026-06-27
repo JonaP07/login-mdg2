@@ -2,6 +2,12 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+// Establecer la ruta de las sesiones y crearla si no existe
+$session_path = __DIR__ . '/../sessions';
+if (!is_dir($session_path)) {
+    mkdir($session_path, 0777, true);
+}
+session_save_path($session_path);
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -22,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Por favor completa todos los campos.';
     } else {
 
-        require_once 'conexion.php';
+        require_once __DIR__ . '/../src/config/conexion.php';
 
         try {
             // Buscamos al usuario por email
@@ -68,13 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-    <div class="container">
+<body class="login-page">
+    <div class="login-wrapper">
         <div class="login-box">
-            <h1>🔐 Iniciar Sesión</h1>
-            <p class="subtitle">Sistema de Publicación Web con Docker</p>
+            <div class="login-brand">Men's Wear</div>
+            <h1>Iniciar Sesion</h1>
+            <p class="subtitle">Accede al panel del sistema con tus credenciales.</p>
 
             <?php if ($error): ?>
                 <div class="alert error"><?= htmlspecialchars($error) ?></div>
@@ -103,13 +110,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         autocomplete="new-password"
                         required
                     >
-                    <p style="font-size: 0.8em; color: #666; margin-top: 5px;">Escribe <strong>1234</strong> manualmente.</p>
+                    <p class="field-help">Escribe <strong>1234</strong> manualmente.</p>
                 </div>
 
-                <button type="submit" class="btn-login">Entrar</button>
+                <button type="submit" class="btn-login">Ingresar</button>
             </form>
 
-            <p class="hint">Usuario de prueba: <strong>admin@test.com</strong> / <strong>1234</strong></p>
+            <div class="login-footer">
+                <p class="hint">Usuario de prueba: <strong>admin@test.com</strong></p>
+                <p class="hint">Clave de prueba: <strong>1234</strong></p>
+            </div>
         </div>
     </div>
 </body>

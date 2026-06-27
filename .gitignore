@@ -4,6 +4,10 @@
 # Docker logs
 *.log
 
+# Runtime files
+sessions/
+tmp/
+
 # OS files
 .DS_Store
 Thumbs.db

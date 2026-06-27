@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: login-mdg2
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    healthCheckPath: /login.php
+    envVars:
+      - key: DATABASE_URL
+        sync: false
